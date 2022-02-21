@@ -47,7 +47,6 @@ public class KafkaProducerExample {
         thirteeEventsPerSecForOneMinute();
         increase1EventPerSecFor1min();
         remainConstant();
-
     }
 
 
@@ -115,7 +114,6 @@ public class KafkaProducerExample {
         }
         log.info("End sending increase linearly  for One Minute");
         log.info("==========================================");
-
     }
 
 
