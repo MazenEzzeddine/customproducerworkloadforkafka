@@ -23,7 +23,7 @@ public class KafkaProducerExample {
     private static final Logger log = LogManager.getLogger(KafkaProducerExample.class);
     private static long iteration = 0;
 
-    private static  KafkaProducerConfig config ;
+    private static KafkaProducerConfig config;
     private static KafkaProducer<String, Customer> producer;
     private static Random rnd;
     private static long key;
@@ -42,23 +42,25 @@ public class KafkaProducerExample {
         int eventsPerSeconds = Integer.parseInt(System.getenv("Events_Per_SEC"));
         AtomicLong numSent = new AtomicLong(0);
         // over all the workload
-         key = 0L;
+        key = 0L;
         tenEventsPerSecForOneMinute();
         thirteeEventsPerSecForOneMinute();
         increase1EventPerSecFor1min();
         remainConstant();
+        increase1EventPerSecFor2min();
+        remainConstantfinal();
     }
 
 
-   static void tenEventsPerSecForOneMinute() throws InterruptedException {
+    static void tenEventsPerSecForOneMinute() throws InterruptedException {
         eventsPerSeconds = 10;
         Instant start = now();
         Instant end = now();
         while (Duration.between(start, end).toMinutes() <= 0) {
             for (int j = 0; j < eventsPerSeconds; j++) {
                 Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
-                        producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
-                                null, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        null, null, UUID.randomUUID().toString(), custm));
                 //log.info("Sending the following customer {}", custm.toString());
             }
             log.info("sent {} eventsPerSeconds", eventsPerSeconds);
@@ -68,8 +70,8 @@ public class KafkaProducerExample {
         }
 
         log.info("End sending 10 events per sec for One Minute");
-       log.info("==========================================");
-   }
+        log.info("==========================================");
+    }
 
 
     static void thirteeEventsPerSecForOneMinute() throws InterruptedException {
@@ -103,7 +105,7 @@ public class KafkaProducerExample {
             for (int j = 0; j < eventsPerSeconds; j++) {
                 Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
                 producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
-                                null, null, UUID.randomUUID().toString(), custm));
+                        null, null, UUID.randomUUID().toString(), custm));
                 //log.info("Sending the following customer {}", custm.toString());
             }
             log.info("sent {} eventsPerSeconds", eventsPerSeconds);
@@ -120,12 +122,56 @@ public class KafkaProducerExample {
     static void remainConstant() throws InterruptedException {
         log.info("From now on I am remaining constant with {} events per sec", eventsPerSeconds);
 
+        Instant start = now();
+        Instant end = now();
+
+        while (Duration.between(start, end).toMinutes() <= 0) {
+            for (int j = 0; j < eventsPerSeconds; j++) {
+                Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        null, null, UUID.randomUUID().toString(), custm));
+                // log.info("Sending the following customer {}",  custm.toString());
+            }
+            log.info("sent {} eventsPerSeconds", eventsPerSeconds);
+            log.info("sleeping for 1 second ");
+            Thread.sleep(1000);
+            end = now();
+        }
+
+    }
+
+
+    static void increase1EventPerSecFor2min() throws InterruptedException {
+        eventsPerSeconds = 100;
+        Instant start = now();
+        Instant end = now();
+        while (Duration.between(start, end).toMinutes() <= 1) {
+            for (int j = 0; j < eventsPerSeconds; j++) {
+                Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        null, null, UUID.randomUUID().toString(), custm));
+                //log.info("Sending the following customer {}", custm.toString());
+            }
+            log.info("sent {} eventsPerSeconds", eventsPerSeconds);
+            log.info("sleeping for one seconds ");
+            Thread.sleep(1000);
+            eventsPerSeconds++;
+            end = now();
+        }
+        log.info("End sending increase linearly  for One Minute");
+        log.info("==========================================");
+    }
+
+    static void remainConstantfinal() throws InterruptedException {
+        log.info("From now on I am remaining constant with {} events per sec", eventsPerSeconds);
+
+
         while (true) {
             for (int j = 0; j < eventsPerSeconds; j++) {
                 Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
-                        producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
-                                null, null, UUID.randomUUID().toString(), custm));
-               // log.info("Sending the following customer {}",  custm.toString());
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        null, null, UUID.randomUUID().toString(), custm));
+                // log.info("Sending the following customer {}",  custm.toString());
             }
             log.info("sent {} eventsPerSeconds", eventsPerSeconds);
             log.info("sleeping for 1 second ");
