@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 
 
 
-//updated on 198
 public class KafkaProducerConfig {
     private static final Logger log = LogManager.getLogger(KafkaProducerConfig.class);
 

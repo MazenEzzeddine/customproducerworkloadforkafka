@@ -10,8 +10,6 @@ public class CustomerSerializer implements Serializer<Customer> {
     public void configure(Map configs, boolean isKey) {
 // nothing to configure
     }
-
-
     @Override
     public byte[] serialize(String topic, Customer data) {
         try {
