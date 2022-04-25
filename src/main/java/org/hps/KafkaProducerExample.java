@@ -39,13 +39,17 @@ public class KafkaProducerExample {
         // over all the workload
         key = 0L;
 
+        fiveEpsToeachPartitonForFiveSeconds();
+        P1P216EPSOthers5EPSFor1min();
 
-        tenEventsPerSecForOneMinute();
-        tenEventsPerSecForOneMinute();
+
+
+        //tenEventsPerSecForOneMinute();
+        //tenEventsPerSecForOneMinute();
         //TwentyEventsPerSecForOneMinute();
         //TwentyEventsPerSecForOneMinute();
-        ThirtyEventsPerSecForOneMinute();
-        ThirtyEventsPerSecForOneMinute();
+       // ThirtyEventsPerSecForOneMinute();
+        //ThirtyEventsPerSecForOneMinute();
 
        /* FourteeEventsPerSecForOneMinute();
         increase1EventPerSecFor1min();
@@ -216,6 +220,83 @@ public class KafkaProducerExample {
         }
 
     }
+
+
+    static void fiveEpsToeachPartitonForFiveSeconds() throws InterruptedException {
+        log.info("I will send five events per seconds for each partition for a " +
+                "duration of 1 minute ");
+
+
+        eventsPerSeconds = 100;
+        Instant start = now();
+        Instant end = now();
+        while (Duration.between(start, end).toMinutes() <= 1) {
+            for (int j = 0; j < 5; j++) {
+                Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        0, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        1, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        2, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        3, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        4, null, UUID.randomUUID().toString(), custm));
+                //log.info("Sending the following customer {}", custm.toString());
+            }
+            log.info("sent 5 events per sec to each partition");
+            log.info("sleeping for one seconds ");
+            Thread.sleep(1000);
+
+            end = now();
+        }
+        log.info("End five events per seconds for each partition ");
+        log.info("==========================================");
+
+    }
+
+
+    static void P1P216EPSOthers5EPSFor1min() throws InterruptedException {
+        log.info("I will send five events per seconds for each partition for a " +
+                "duration of 1 minute ");
+
+
+        eventsPerSeconds = 100;
+        Instant start = now();
+        Instant end = now();
+        while (Duration.between(start, end).toMinutes() <= 1) {
+            Customer custm = new Customer(rnd.nextInt(), UUID.randomUUID().toString());
+
+            for (int j = 0; j < 16; j++) {
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        0, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        1, null, UUID.randomUUID().toString(), custm));
+            }
+
+            for (int j = 0; j < 5; j++) {
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        2, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        3, null, UUID.randomUUID().toString(), custm));
+                producer.send(new ProducerRecord<String, Customer>(config.getTopic(),
+                        4, null, UUID.randomUUID().toString(), custm));
+                //log.info("Sending the following customer {}", custm.toString());
+            }
+            log.info("sent 16 P1 P2 and 5 Otherwise  events per sec to each partition");
+            log.info("sleeping for one seconds ");
+            Thread.sleep(1000);
+
+            end = now();
+        }
+        log.info("End sent 16 P1 P2 and 5 Otherwise  events per sec to each partition ");
+        log.info("==========================================");
+
+    }
+
+
+
 }
 
 
